@@ -1,0 +1,50 @@
+/* pages/game/index.wxss */
+
+page {
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+}
+
+.container .top-area {
+  position: fixed;
+  width: 100%;
+  height: 180rpx;
+  top: 0rpx;
+  left: 0rpx;
+  right: 0rpx;
+  display: flex;
+  flex-direction: row;
+  background: yellow;
+}
+
+.container .game-area {
+  position: fixed;
+  left: 75rpx;
+  right: 75rpx;
+  top: 200rpx;
+  width: 600rpx;
+  height: 600rpx;
+  background: lightgray;
+  border-radius: 20rpx;
+}
+
+.container .tile{
+  position: fixed;
+  background: blue;
+  border-radius: 20rpx;
+  width: 120rpx;
+  height: 120rpx;
+}
+
+.container .option-area{
+  position: fixed;
+  top:800rpx;
+  height: 549rpx;
+  width:100%;
+  background: red;
+}

@@ -1,0 +1,16 @@
+<!--pages/game/index.wxml-->
+<view class="container">
+  <view class="top-area">
+    120
+  </view>
+  <view class="game-area">
+    <block wx:for="{{rowCount}}" wx:for-item="rowIndex">
+      <block wx:for="{{colCount}}" wx:for-item="colIndex">
+         <view class="tile" style="left:{{tilePosXList[colIndex + rowIndex * colCount]}}rpx;top:{{tilePosYList[colIndex + rowIndex * colCount]}}rpx"> 
+         </view> 
+      </block>
+    </block>
+  </view>
+  <view class="option-area">
+  </view>
+</view>
