@@ -329,6 +329,7 @@ Page({
 
   // 播放merge效果
   mergeTiles: function (findTileIds, centerId) {
+    let that = this;
     let currentValue = this.data.tileValue[centerId]
     this.data.tileValue[centerId] = "";
     this.data.tileOccpuied[centerId] = false;
@@ -338,12 +339,20 @@ Page({
       this.data.tileValue[index] = "";
       this.data.tileOccpuied[index] = false;
       this.data.tileColor[index] = DEFAULT_COLOR;
-      this.setData({
-        tileValue: this.data.tileValue,
-        tileColor: this.data.tileColor,
-        tileOccpuied: this.data.tileOccpuied,
-      });
+      // this.setData({
+      //   tileValue: this.data.tileValue,
+      //   tileColor: this.data.tileColor,
+      //   tileOccpuied: this.data.tileOccpuied,
+      // });
     }
+
+    setTimeout(() => {
+      that.setData({
+        tileValue: that.data.tileValue,
+        tileColor: that.data.tileColor,
+        tileOccpuied: that.data.tileOccpuied,
+      });
+    }, frameInterval);
 
     let centerGridPos = this.id2GridPos(centerId);
     let viewPos = this.gridPos2ViewPos(centerGridPos.x, centerGridPos.y);
@@ -357,7 +366,6 @@ Page({
       moveTiles.push(tile);
     }
 
-    var that = this;
     var mergeAnimation = new MergeAnimation(centerTile, moveTiles, MERGE_TIME, () => {
       that.addTile(centerGridPos.x, centerGridPos.y, currentValue + 1);
       that.data.score += currentValue * (findTileIds.length + 1);
@@ -456,6 +464,9 @@ Page({
   },
 
   clickPause: function(e){
+    wx.showToast({
+      title: 'TODO 暂停',
+    })
     console.log("Pause");
   },
 
