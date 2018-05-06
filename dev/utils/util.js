@@ -28,4 +28,8 @@ var jsonLength = (obj) => {
   return size;
 }
 
-module.exports = { formatTime, rpx2px, jsonLength }
+var getTimeNow = function () {
+  return +new Date();
+};
+
+module.exports = { formatTime, rpx2px, jsonLength, getTimeNow }

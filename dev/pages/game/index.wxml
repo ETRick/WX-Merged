@@ -1,16 +1,29 @@
 <!--pages/game/index.wxml-->
 <view class="container">
   <view class="top-area">
-    120
+    <text class="score">{{score}}</text>
   </view>
   <view class="game-area">
-    <block wx:for="{{rowCount}}" wx:for-item="rowIndex">
-      <block wx:for="{{colCount}}" wx:for-item="colIndex">
-         <view class="tile" style="left:{{tilePosXList[colIndex + rowIndex * colCount]}}rpx;top:{{tilePosYList[colIndex + rowIndex * colCount]}}rpx"> 
-         </view> 
+    <block wx:for="{{25}}" wx:key="index">
+      <block wx:if="{{tileOccpuied[index]}}">
+        <image class="tile" src="{{tileImgSrc[index]}}" style="left:{{tilePosXList[index]}}px;top:{{tilePosYList[index]}}px;"></image>
+      </block>
+      <block wx:else>
+        <view class="tile empty" style="left:{{tilePosXList[index]}}px;top:{{tilePosYList[index]}}px;">
+          <view class="center-dash"></view>
+        </view>
       </block>
     </block>
   </view>
-  <view class="option-area">
+  <view class="option-area ">
+
+    <image class="option-tool " src="/images/game/rotate.png "></image>
   </view>
+  <canvas class="game-canvas" canvas-id='game-canvas' disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
+    <cover-view class="controls">
+      <cover-image class="pause" src="/images/game/pause.png" bindtap='clickPause'></cover-image> 
+      <button class="btn-reset" bindtap='resetOption'>reset</button>
+    </cover-view>
+
+  </canvas>
 </view>

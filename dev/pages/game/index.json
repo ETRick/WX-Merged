@@ -1,5 +1,8 @@
 {
   "navigationBarTitleText": "七七消除",
+  "navigationBarTextStyle": "white",
   "enablePullDownRefresh": false,
-  "disableScroll": true
+  "disableScroll": true,
+  "navigationBarBackgroundColor":"#2B223B"
+
 }
