@@ -248,7 +248,7 @@ Page({
 
     setTimeout(() => {
       that.shape = null;
-    }, frameInterval);
+    }, frameInterval * 2);
     setTimeout(() => {
       that.generateOption();
     }, STEP_OVER_WATI_TIME);
@@ -352,7 +352,7 @@ Page({
         tileColor: that.data.tileColor,
         tileOccpuied: that.data.tileOccpuied,
       });
-    }, frameInterval);
+    }, frameInterval * 2);
 
     let centerGridPos = this.id2GridPos(centerId);
     let viewPos = this.gridPos2ViewPos(centerGridPos.x, centerGridPos.y);

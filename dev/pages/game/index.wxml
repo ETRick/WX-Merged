@@ -22,7 +22,7 @@
   <canvas class="game-canvas" canvas-id='game-canvas' disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
     <cover-view class="controls">
       <cover-image class="pause" src="/images/game/pause.png" bindtap='clickPause'></cover-image> 
-      <button class="btn-reset" bindtap='resetOption'>reset</button>
+      <button class="btn-reset" bindtap='resetOption' open-type="share">reset</button>
     </cover-view>
 
   </canvas>

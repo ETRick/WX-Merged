@@ -70,15 +70,14 @@ page {
   justify-content: center;
 }
 
-.container .empty{
-  background:#35334F;
+.container .empty {
+  background: #35334f;
 }
 
-.container .tile .center-dash
-{
+.container .tile .center-dash {
   width: 25%;
   height: 25%;
-  background: #302E46;
+  background: #302e46;
 }
 
 /* --------------------------------option-area=---------------------- */
@@ -94,7 +93,7 @@ page {
   align-items: center;
 }
 
-.container .option-area .btn-reset{
+.container .option-area .btn-reset {
   position: absolute;
   left: 50rpx;
   bottom: 40rpx;
@@ -114,20 +113,22 @@ page {
   width: 100%;
   height: 100%;
 }
+
 /* 暂停按钮 */
-.game-canvas .pause{
-  width:48rpx;
+
+.game-canvas .pause {
+  width: 48rpx;
   height: 96rpx;
-  position: absolute;
-  left: 50rpx;
-  top: 20rpx;
+  margin-left: 50rpx;
+  margin-top: 10rpx;
 }
 
 /* 重置按钮 */
-.game-canvas .controls .btn-reset{
-  position: absolute;
-  left: 30rpx;
-  bottom: 30rpx;
+
+.game-canvas .controls .btn-reset {
+  width:150rpx;
+  height: 100rpx;
+  background: red;
 }
 
 /* @font-face {
