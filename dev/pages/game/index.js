@@ -47,7 +47,7 @@ var animationFrame = function (callback, caller) {
   }, frameInterval);
 }
 
-let marginLeft = (wx.getSystemInfoSync().windowWidth - GAME_AREA_WIDTH)/2;
+let marginLeft = (wx.getSystemInfoSync().windowWidth - GAME_AREA_WIDTH) / 2;
 
 // 暂时是5x5的棋格
 // 单位均为rpx
@@ -83,7 +83,7 @@ Page({
     tileColor: [],
     tileValue: [],
     tileOccpuied: [],
-    tileImgSrc:[],
+    tileImgSrc: [],
   },
 
   /**
@@ -192,9 +192,9 @@ Page({
 
   // 接下去产生的是不是单个的
   isNextSingle: function () {
-    if (this.hasContiousPos()){
+    if (this.hasContiousPos()) {
       return Math.random() > 0.5;
-    }else{
+    } else {
       return true;
     }
   },
@@ -231,18 +231,16 @@ Page({
   },
 
   // 一个步骤结束
-  oneStepOver: function () {
-    console.log("oneStepOver");
+  oneStepOver: function (targetGridPosList) {
     var that = this;
     let allSingleShapeViewPosList = this.shape.getAllSingleOneRelativePoses();
 
     let values = this.shape.values;
 
     for (var i = 0; i < allSingleShapeViewPosList.length; i++) {
-      let relativePos = allSingleShapeViewPosList[i];
-      let x = relativePos.x + this.shape.x;
-      let y = relativePos.y + this.shape.y;
-      let gridPos = this.viewPos2GridPos(x, y);
+      let gridX = targetGridPosList[i].x;
+      let gridY = targetGridPosList[i].y;
+      let gridPos = { x: gridX, y: gridY };
       this.addTile(gridPos.x, gridPos.y, values[i] || this.shape.value);
     }
 
@@ -256,7 +254,6 @@ Page({
 
   // 向地图添加一个css绘制的tile
   addTile: function (gridX, gridY, value) {
-    console.log("add to ", gridX, gridY);
     // 更新当前合成的最大值
     if (value > currentMaxNumber) {
       currentMaxNumber = value;
@@ -275,7 +272,7 @@ Page({
     });
 
     var that = this;
-    setTimeout(()=>{
+    setTimeout(() => {
       that.mergeOne(gridX, gridY);
     }, 200);
   },
@@ -379,8 +376,9 @@ Page({
 
   // 获取可以填充位置与当前位置的距离，二位{x,y}
   getFitRelativeDist: function (pos) {
+    var result;
     var targetRelativeDist; //二维，x， y
-
+    var targetGridPosList;
     let detectViewPos = {
       x: pos.x - GAME_AREA_START_POS.x,
       y: pos.y - OFFESET_Y - GAME_AREA_START_POS.y
@@ -399,11 +397,13 @@ Page({
         if (!this.data.tileOccpuied[id]) {
           if (!targetRelativeDist) {
             let targetViewPos = this.gridPos2ViewPos(gridX, gridY);
+            targetGridPosList = [];
             targetRelativeDist = {
               x: targetViewPos.x - x - GAME_AREA_START_POS.x,
-              y: targetViewPos.y - y - GAME_AREA_START_POS.y
+              y: targetViewPos.y - y - GAME_AREA_START_POS.y,
             }
           }
+          targetGridPosList.push({ x: gridX, y: gridY });
         } else {
           return false;
         }
@@ -412,7 +412,14 @@ Page({
       }
     }
 
-    return targetRelativeDist;
+    if (targetRelativeDist) {
+      result = {
+        targetRelativeDist: targetRelativeDist,
+        targetGridPosList: targetGridPosList
+      }
+    }
+
+    return result;
   },
 
   // -------------功能性的--------
@@ -443,9 +450,12 @@ Page({
     return { x: destX, y: destY };
   },
 
-  // 视图坐标转化为网格坐标
+  // 视图坐标转化为网格坐标(会有浮点数精度的问题，不要用)
   viewPos2GridPos: function (x, y) {
+    console.log("view2grid ", x, y);
     let gridX = Math.floor((x - GAME_AREA_START_POS.x - 0.5 * BOX_WIDTH) / BOX_WIDTH);
+    console.log(y - GAME_AREA_START_POS.y);
+    console.log((y - GAME_AREA_START_POS.y - 0.5 * BOX_WIDTH))
     let gridY = Math.floor((y - GAME_AREA_START_POS.y - 0.5 * BOX_WIDTH) / BOX_WIDTH);
     return { x: gridX, y: gridY };
   },
@@ -458,12 +468,12 @@ Page({
   },
 
   // -------------------------------事件--------------------------
-  resetOption:function(e){
+  resetOption: function (e) {
     console.log("rest");
     this.generateOption();
   },
 
-  clickPause: function(e){
+  clickPause: function (e) {
     wx.showToast({
       title: 'TODO 暂停',
     })
@@ -498,14 +508,12 @@ Page({
   touchEnd: function () {
     let that = this;
     if (this.inTouch) {
-      let fitRelativeDist = this.getFitRelativeDist(this.lastPos);
-      if (fitRelativeDist) {
-        console.log(fitRelativeDist);
-        this.shape.move(fitRelativeDist.x, fitRelativeDist.y, FIT_MOVE_TIME, () => {
+      let { targetRelativeDist, targetGridPosList } = this.getFitRelativeDist(this.lastPos);
+      if (targetRelativeDist) {
+        this.shape.move(targetRelativeDist.x, targetRelativeDist.y, FIT_MOVE_TIME, () => {
           // TODO 在该位置产生一个
-          that.oneStepOver();
+          that.oneStepOver(targetGridPosList);
         })
-        // that.oneStepOver();
       } else {
         this.shape.moveTo(OPTION_TOOL_X, OPTION_TOOL_Y, 200);
       }
