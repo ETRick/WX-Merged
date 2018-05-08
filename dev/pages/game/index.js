@@ -3,9 +3,11 @@
 const util = require('../../utils/util.js');
 const Shapes = require('../../shape/shapes.js');
 const ComposedAnimation = require('../../utils/composedAnimation.js');
+const COLORS = require("../../utils/colors.js");
+const POS_TRANS = require("../../utils/positionTransfer.js");
+
 const animationController = ComposedAnimation.animationController;
 const MergeAnimation = ComposedAnimation.MergeAnimation;
-const COLORS = require("../../utils/colors.js");
 const getTileImgSrcByValue = COLORS.getTileImgSrcByValue;
 const getColorByValue = COLORS.getColorByValue;
 const VALUE_COLORS = COLORS.VALUE_COLORS;
@@ -14,29 +16,30 @@ const SingleShape = Shapes.Single;
 const PairShape = Shapes.Pair;
 const rpx2px = util.rpx2px;
 
-//游戏区域的边长
-const GAME_AREA_WIDTH = rpx2px(600);
-// 游戏区域长宽的格子个数
-const COLUMNS = 5;
-// 包含item的外壳的宽度
-const BOX_WIDTH = GAME_AREA_WIDTH / COLUMNS;
-// 一个带颜色格子的宽度
-const ITEM_WIDTH = BOX_WIDTH - rpx2px(10);
-// 一帧的时间
-var frameInterval = 1000 / 60;
-// 缺省的格子颜色
-const DEFAULT_COLOR = "#35334F";
-// 放置完后新的棋子生成等待的时间
-const STEP_OVER_WATI_TIME = 200;
-// 坐标默认用rpx
-const OPTION_TOOL_X = rpx2px(375);
-const OPTION_TOOL_Y = rpx2px(1003);
-// 手指点击拖动方块时候方块在上方的偏移
-const OFFESET_Y = rpx2px(110);
-// 匹配之后移动过去的时间
-const FIT_MOVE_TIME = 60;
-// 合成的时间
-const MERGE_TIME = 200;
+var {
+  GAME_AREA,
+  GAME_AREA_WIDTH,
+  MAP_SIZE,
+  BOX_WIDTH,
+  ITEM_WIDTH,
+  FRAME_INTERVAL,
+  DEFAULT_COLOR,
+  STEP_OVER_WATI_TIME,
+  OPTION_TOOL_X,
+  OPTION_TOOL_Y,
+  OFFESET_Y,
+  FIT_MOVE_TIME,
+  ROTATE_TIME,
+  MERGE_TIME
+} = require("../../consts.js");
+
+const DIRECTIONS = [
+  { x: -1, y: 0 },
+  { x: 0, y: -1 },
+  { x: 1, y: 0 },
+  { x: 0, y: 1 },
+];
+
 // 游戏格子区域的起始位置
 // 当前合成到的最大的数组
 var currentMaxNumber = 2;
@@ -44,24 +47,8 @@ var currentMaxNumber = 2;
 var animationFrame = function (callback, caller) {
   setTimeout(function () {
     callback.call(caller);
-  }, frameInterval);
+  }, FRAME_INTERVAL);
 }
-
-let marginLeft = (wx.getSystemInfoSync().windowWidth - GAME_AREA_WIDTH) / 2;
-
-// 暂时是5x5的棋格
-// 单位均为rpx
-const GAME_AREA = {
-  top: rpx2px(270),
-  left: marginLeft,
-  width: 565,
-  height: 565
-};
-
-const GAME_AREA_START_POS = { x: GAME_AREA.left, y: GAME_AREA.top };
-
-const MAX_WIDTH_RPX = 750;
-const MAX_HEIGHT_RPX = 1334;
 
 Page({
   ctx: null,
@@ -73,11 +60,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    debugLog: "debugLog",
     score: 0,
-    rowCount: 5,
-    colCount: 5,
-    tileLength: GAME_AREA_WIDTH / COLUMNS * 2,
     tilePosXList: null,   //index 为 id starting from 0, id = row * colCont + col;
     tilePosYListt: null,
     tileColor: [],
@@ -103,14 +86,15 @@ Page({
     this.generateOption();
   },
 
+  // 字体设置
   initFontSetting: function () {
     let fontSize = util.rpx2px(70);
     this.ctx.setFontSize(fontSize);
     this.ctx.setTextAlign("center");
     this.ctx.setTextBaseline("middle");
-    // this.ctx.font = `${fontSize}px Arial`;
   },
 
+  // 更新逻辑
   update: function () {
     this.logicUpdate();
     this.render();
@@ -119,10 +103,7 @@ Page({
 
   // 逻辑刷新
   logicUpdate: function () {
-    if (this.shape) {
-      this.shape.update();
-    }
-
+    this.shape && this.shape.update();
     animationController.update();
   },
 
@@ -147,14 +128,11 @@ Page({
     var startX = GAME_AREA.left;
     var startY = GAME_AREA.top;
 
-    let rowCount = this.data.rowCount;
-    let colCount = this.data.colCount;
-
-    for (var row = 0; row < this.data.rowCount; row++) {
-      for (var col = 0; col < this.data.colCount; col++) {
-        let id = this.gridPos2Id(col, row);
+    for (var row = 0; row < MAP_SIZE; row++) {
+      for (var col = 0; col < MAP_SIZE; col++) {
+        let id = POS_TRANS.gridPos2Id(col, row);
         let y = startY + row * BOX_WIDTH;
-        let x = startX + (col % colCount) * BOX_WIDTH;
+        let x = startX + (col % MAP_SIZE) * BOX_WIDTH;
         tilePosXList[id] = x;
         tilePosYList[id] = y;
         tileColor[id] = DEFAULT_COLOR;
@@ -178,7 +156,6 @@ Page({
   generateOption: function () {
     if (this.isNextSingle()) {
       let value = Math.floor(Math.random() * currentMaxNumber + 1);
-      value = 7;
       this.shape = new SingleShape(OPTION_TOOL_X, OPTION_TOOL_Y, ITEM_WIDTH, ITEM_WIDTH, value);
     } else {
       var value1, value2;
@@ -200,21 +177,21 @@ Page({
     }
   },
 
-  // 是否存在连续
+  // 是否存在连续空位
   hasContiousPos: function () {
     var that = this;
     var check = function (id) {
-      if (id < COLUMNS * COLUMNS) {
+      if (id < MAP_SIZE * MAP_SIZE) {
         return !that.data.tileOccpuied[id]
       }
     }
 
-    for (var id = 0; id < COLUMNS * COLUMNS; id++) {
+    for (var id = 0; id < MAP_SIZE * MAP_SIZE; id++) {
       if (check(id)) {
         let rightId = id + 1;
         if (check(rightId))
           return true;
-        let downId = id + COLUMNS;
+        let downId = id + MAP_SIZE;
         if (check(downId))
           return true;
       }
@@ -222,14 +199,6 @@ Page({
     return false;
   },
 
-  // 是否点中待填充物
-  isInOptionArea: function (x, y) {
-    if (this.shape) {
-      let test = this.shape.inBound(x, y);
-      return this.shape.inBound(x, y);
-    }
-    return false;
-  },
 
   // 一个步骤结束
   oneStepOver: function (targetGridPosList) {
@@ -247,7 +216,7 @@ Page({
 
     setTimeout(() => {
       that.shape = null;
-    }, frameInterval * 2);
+    }, FRAME_INTERVAL * 2);
     setTimeout(() => {
       that.generateOption();
     }, STEP_OVER_WATI_TIME);
@@ -260,7 +229,7 @@ Page({
       currentMaxNumber = value;
     }
 
-    let id = this.gridPos2Id(gridX, gridY);
+    let id = POS_TRANS.gridPos2Id(gridX, gridY);
     this.data.tileColor[id] = getColorByValue(value);
     this.data.tileValue[id] = value;
     this.data.tileImgSrc[id] = getTileImgSrcByValue(value);
@@ -283,20 +252,14 @@ Page({
   mergeOne: function (posX, posY) {
     let scanedTiles = [];
     let findTiles = [];
-    let directions = [
-      { x: -1, y: 0 },
-      { x: 0, y: -1 },
-      { x: 1, y: 0 },
-      { x: 0, y: 1 },
-    ];
 
     var that = this;
 
-    let nowId = this.gridPos2Id(posX, posY);
+    let nowId = POS_TRANS.gridPos2Id(posX, posY);
     let targetValue = this.data.tileValue[nowId];
 
     let merge = (x, y) => {
-      let id = that.gridPos2Id(x, y);
+      let id = POS_TRANS.gridPos2Id(x, y);
       if (scanedTiles.indexOf(id) == -1) {
         scanedTiles.push(id);
         if (that.data.tileValue[id] && that.data.tileValue[id] === targetValue) {
@@ -308,9 +271,9 @@ Page({
         return;
       }
 
-      for (var i = 0; i < directions.length; i++) {
-        let nextX = x + directions[i].x;
-        let nextY = y + directions[i].y;
+      for (var i = 0; i < DIRECTIONS.length; i++) {
+        let nextX = x + DIRECTIONS[i].x;
+        let nextY = y + DIRECTIONS[i].y;
         merge(nextX, nextY);
       }
     };
@@ -343,16 +306,16 @@ Page({
         tileColor: that.data.tileColor,
         tileOccpuied: that.data.tileOccpuied,
       });
-    }, frameInterval * 2);
+    }, FRAME_INTERVAL * 2);
 
-    let centerGridPos = this.id2GridPos(centerId);
-    let viewPos = this.gridPos2ViewPos(centerGridPos.x, centerGridPos.y);
+    let centerGridPos = POS_TRANS.id2GridPos(centerId);
+    let viewPos = POS_TRANS.gridPos2ViewPos (centerGridPos.x, centerGridPos.y);
     let centerTile = new SingleShape(viewPos.x, viewPos.y, ITEM_WIDTH, ITEM_WIDTH, currentValue);
 
     var moveTiles = [];
     for (var i = 0; i < findTileIds.length; i++) {
-      let gridPos = this.id2GridPos(findTileIds[i]);
-      let viewPos = this.gridPos2ViewPos(gridPos.x, gridPos.y);
+      let gridPos = POS_TRANS.id2GridPos(findTileIds[i]);
+      let viewPos = POS_TRANS.gridPos2ViewPos (gridPos.x, gridPos.y);
       let tile = new SingleShape(viewPos.x, viewPos.y, ITEM_WIDTH, ITEM_WIDTH, currentValue);
       moveTiles.push(tile);
     }
@@ -365,7 +328,6 @@ Page({
   },
 
   removeTileById: function (id) {
-    console.log("remove ", id);
     this.data.tileValue[id] = "";
     this.data.tileOccpuied[id] = false;
     this.data.tileColor[id] = DEFAULT_COLOR;
@@ -374,12 +336,13 @@ Page({
   // merge结束后
   onMergeComplete: function (centerGridPos, currentValue, findTileIds) {
     if (currentValue == 7) {
+      console.log("爆炸");
       //3X3的格子爆炸
       for (var col = centerGridPos.x - 1; col <= centerGridPos.x + 1; col++) {
         for (var row = centerGridPos.y - 1; row <= centerGridPos.y + 1; row++) {
-          let id = this.gridPos2Id(col, row);
+          let id = POS_TRANS.gridPos2Id(col, row);
           if (!id)
-            return;
+            continue;
           // 获取id然后把值加上去
           let value = this.data.tileValue[id];
           if (typeof (value) == "number") {
@@ -390,8 +353,9 @@ Page({
       }
     } else {
       this.addTile(centerGridPos.x, centerGridPos.y, currentValue + 1);
-      this.data.score += currentValue * (findTileIds.length + 1);
+      
     }
+    this.data.score += currentValue * (findTileIds.length + 1);
     this.setData({
       tileValue: this.data.tileValue,
       tileOccpuied: this.data.tileOccpuied,
@@ -406,8 +370,8 @@ Page({
     var targetRelativeDist; //二维，x， y
     var targetGridPosList;
     let detectViewPos = {
-      x: pos.x - GAME_AREA_START_POS.x,
-      y: pos.y - OFFESET_Y - GAME_AREA_START_POS.y
+      x: pos.x - GAME_AREA.left,
+      y: pos.y - OFFESET_Y - GAME_AREA.top
     }
 
     let allSingleShapeViewPosList = this.shape.getAllSingleOneRelativePoses();
@@ -418,15 +382,15 @@ Page({
       let y = relativePos.y + detectViewPos.y;
       let gridX = Math.floor(x / BOX_WIDTH);
       let gridY = Math.floor(y / BOX_WIDTH);
-      if (gridX < COLUMNS && gridX > -1 && gridY < COLUMNS && gridY > -1) {
-        let id = this.gridPos2Id(gridX, gridY);
+      if (gridX < MAP_SIZE && gridX > -1 && gridY < MAP_SIZE && gridY > -1) {
+        let id = POS_TRANS.gridPos2Id(gridX, gridY);
         if (!this.data.tileOccpuied[id]) {
           if (!targetRelativeDist) {
-            let targetViewPos = this.gridPos2ViewPos(gridX, gridY);
+            let targetViewPos = POS_TRANS.gridPos2ViewPos (gridX, gridY);
             targetGridPosList = [];
             targetRelativeDist = {
-              x: targetViewPos.x - x - GAME_AREA_START_POS.x,
-              y: targetViewPos.y - y - GAME_AREA_START_POS.y,
+              x: targetViewPos.x - x - GAME_AREA.left,
+              y: targetViewPos.y - y - GAME_AREA.top,
             }
           }
           targetGridPosList.push({ x: gridX, y: gridY });
@@ -449,41 +413,6 @@ Page({
     return result;
   },
 
-  // -------------功能性的--------
-  // 网格坐标转化为id
-  gridPos2Id: function (x, y) {
-    if (x >= COLUMNS)
-      return false;
-    if (x < 0)
-      return false;
-    if (y >= COLUMNS)
-      return false;
-    if (y < 0)
-      return false;
-    return x + y * this.data.colCount;
-  },
-
-  // id 转换为 网格坐标
-  id2GridPos: function (id) {
-    let y = Math.floor(id / COLUMNS);
-    let x = Math.floor(id % COLUMNS);
-    return { x: x, y: y };
-  },
-
-  // 网格坐标转为canva的坐标
-  gridPos2ViewPos: function (gridX, gridY) {
-    let destX = GAME_AREA_START_POS.x + (gridX + 0.5) * BOX_WIDTH;
-    let destY = GAME_AREA_START_POS.y + (gridY + 0.5) * BOX_WIDTH;
-    return { x: destX, y: destY };
-  },
-
-  // 打log
-  log: function (str) {
-    this.setData({
-      debugLog: str || ""
-    });
-  },
-
   // -------------------------------事件--------------------------
   resetOption: function (e) {
     console.log("rest");
@@ -498,13 +427,13 @@ Page({
   },
 
   touchStart: function (e) {
-    if (this.isInOptionArea(e.touches[0].x, e.touches[0].y)) {
+    if (this.shape.inBound(e.touches[0].x, e.touches[0].y)) {
       this.inTouch = true;
       this.lastPos = e.touches[0];
 
       setTimeout(() => {
         if (!this.inTouch) {
-          this.shape.rotate(90, 150);
+          this.shape.rotate(90, ROTATE_TIME);
         }
       }, 100);
     }
@@ -532,7 +461,6 @@ Page({
           console.log("纯debug");
           this.getFitRelativeDist(this.lastPos);
         }
-
 
         this.shape.move(targetRelativeDist.x, targetRelativeDist.y, FIT_MOVE_TIME, () => {
           // TODO 在该位置产生一个

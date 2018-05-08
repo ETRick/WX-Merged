@@ -58,6 +58,40 @@ var ComposedAnimation = {
     return MergeAnimation
   }()),
 
+  ExploreAnimation: (function(){
+    function ExploreAnimation(x, y, duration, callback){
+      this.x = x;
+      this.y = y;
+      this.duration = duration;
+      this.callback= callback;
+    }
+
+    ExploreAnimation.prototype = {
+      update: function(){
+
+      },
+
+      draw: function(){
+
+      },
+
+      isComplete: function(){
+        let lastTime = this.lastTime;
+        let duration = this.duration;
+        let startTime = this.startTime;
+        if (lastTime > startTime + duration) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      complete: function(){
+        this.callback && this.callback();
+      }
+    }
+  }()),
+
   animationController: {
 
     mergeAnimations: [],
