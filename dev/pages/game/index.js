@@ -178,6 +178,7 @@ Page({
   generateOption: function () {
     if (this.isNextSingle()) {
       let value = Math.floor(Math.random() * currentMaxNumber + 1);
+      value = 7;
       this.shape = new SingleShape(OPTION_TOOL_X, OPTION_TOOL_Y, ITEM_WIDTH, ITEM_WIDTH, value);
     } else {
       var value1, value2;
@@ -333,14 +334,7 @@ Page({
     this.data.tileColor[centerId] = DEFAULT_COLOR;
     for (var i = 0; i < findTileIds.length; i++) {
       let index = findTileIds[i];
-      this.data.tileValue[index] = "";
-      this.data.tileOccpuied[index] = false;
-      this.data.tileColor[index] = DEFAULT_COLOR;
-      // this.setData({
-      //   tileValue: this.data.tileValue,
-      //   tileColor: this.data.tileColor,
-      //   tileOccpuied: this.data.tileOccpuied,
-      // });
+      this.removeTileById(index);
     }
 
     setTimeout(() => {
@@ -364,14 +358,46 @@ Page({
     }
 
     var mergeAnimation = new MergeAnimation(centerTile, moveTiles, MERGE_TIME, () => {
-      that.addTile(centerGridPos.x, centerGridPos.y, currentValue + 1);
-      that.data.score += currentValue * (findTileIds.length + 1);
-      that.setData({
-        score: that.data.score
-      });
+      that.onMergeComplete(centerGridPos, currentValue, findTileIds);
     })
 
     animationController.startMergeAnimation(mergeAnimation);
+  },
+
+  removeTileById: function (id) {
+    console.log("remove ", id);
+    this.data.tileValue[id] = "";
+    this.data.tileOccpuied[id] = false;
+    this.data.tileColor[id] = DEFAULT_COLOR;
+  },
+
+  // merge结束后
+  onMergeComplete: function (centerGridPos, currentValue, findTileIds) {
+    if (currentValue == 7) {
+      //3X3的格子爆炸
+      for (var col = centerGridPos.x - 1; col <= centerGridPos.x + 1; col++) {
+        for (var row = centerGridPos.y - 1; row <= centerGridPos.y + 1; row++) {
+          let id = this.gridPos2Id(col, row);
+          if (!id)
+            return;
+          // 获取id然后把值加上去
+          let value = this.data.tileValue[id];
+          if (typeof (value) == "number") {
+            this.data.score += value;
+            this.removeTileById(id);
+          }
+        }
+      }
+    } else {
+      this.addTile(centerGridPos.x, centerGridPos.y, currentValue + 1);
+      this.data.score += currentValue * (findTileIds.length + 1);
+    }
+    this.setData({
+      tileValue: this.data.tileValue,
+      tileOccpuied: this.data.tileOccpuied,
+      tileColor: this.data.tileColor,
+      score: this.data.score
+    });
   },
 
   // 获取可以填充位置与当前位置的距离，二位{x,y}
@@ -419,6 +445,7 @@ Page({
       }
     }
 
+    console.log(result);
     return result;
   },
 
@@ -450,16 +477,6 @@ Page({
     return { x: destX, y: destY };
   },
 
-  // 视图坐标转化为网格坐标(会有浮点数精度的问题，不要用)
-  viewPos2GridPos: function (x, y) {
-    console.log("view2grid ", x, y);
-    let gridX = Math.floor((x - GAME_AREA_START_POS.x - 0.5 * BOX_WIDTH) / BOX_WIDTH);
-    console.log(y - GAME_AREA_START_POS.y);
-    console.log((y - GAME_AREA_START_POS.y - 0.5 * BOX_WIDTH))
-    let gridY = Math.floor((y - GAME_AREA_START_POS.y - 0.5 * BOX_WIDTH) / BOX_WIDTH);
-    return { x: gridX, y: gridY };
-  },
-
   // 打log
   log: function (str) {
     this.setData({
@@ -487,7 +504,7 @@ Page({
 
       setTimeout(() => {
         if (!this.inTouch) {
-          this.shape.rotate(90, 300);
+          this.shape.rotate(90, 150);
         }
       }, 100);
     }
@@ -510,6 +527,13 @@ Page({
     if (this.inTouch) {
       let { targetRelativeDist, targetGridPosList } = this.getFitRelativeDist(this.lastPos);
       if (targetRelativeDist) {
+
+        if (Math.abs(targetRelativeDist.x) > 200 || Math.abs(targetRelativeDist.y) > 200) {
+          console.log("纯debug");
+          this.getFitRelativeDist(this.lastPos);
+        }
+
+
         this.shape.move(targetRelativeDist.x, targetRelativeDist.y, FIT_MOVE_TIME, () => {
           // TODO 在该位置产生一个
           that.oneStepOver(targetGridPosList);
