@@ -2,18 +2,21 @@
 
 const util = require('../../utils/util.js');
 const Shapes = require('../../shape/shapes.js');
-const ComposedAnimation = require('../../utils/composedAnimation.js');
+const animations = require('../../animation/animations.js');
 const COLORS = require("../../utils/colors.js");
 const POS_TRANS = require("../../utils/positionTransfer.js");
 
-const animationController = ComposedAnimation.animationController;
-const MergeAnimation = ComposedAnimation.MergeAnimation;
+const animationController = animations.AnimationController;
+
+const MergeAnimation = animations.MergeAnimation;
+const ExploreAnimation = animations.ExploreAnimation;
+
 const getTileImgSrcByValue = COLORS.getTileImgSrcByValue;
 const getColorByValue = COLORS.getColorByValue;
 const VALUE_COLORS = COLORS.VALUE_COLORS;
 
-const SingleShape = Shapes.Single;
-const PairShape = Shapes.Pair;
+const SingleTile = Shapes.SingleTile;
+const PairShape = Shapes.PairTile;
 const rpx2px = util.rpx2px;
 
 var {
@@ -74,6 +77,14 @@ Page({
    */
   onLoad: function (options) {
     this.initMap();
+
+    setTimeout(()=>{
+      var exploreAnimation = new ExploreAnimation(140, 300, 200000, () => {
+        console.log("explorAnimationComplete");
+      });
+      animationController.startAnimation(exploreAnimation);
+      
+    }, 100);
   },
 
   /**
@@ -156,14 +167,14 @@ Page({
   generateOption: function () {
     if (this.isNextSingle()) {
       let value = Math.floor(Math.random() * currentMaxNumber + 1);
-      this.shape = new SingleShape(OPTION_TOOL_X, OPTION_TOOL_Y, ITEM_WIDTH, ITEM_WIDTH, value);
+      this.shape = new SingleTile(OPTION_TOOL_X, OPTION_TOOL_Y, value);
     } else {
       var value1, value2;
       value1 = Math.floor(Math.random() * currentMaxNumber + 1);
       while (!value2 || value2 == value1) {
         value2 = Math.floor(Math.random() * currentMaxNumber + 1);
       }
-      this.shape = new PairShape(OPTION_TOOL_X, OPTION_TOOL_Y, ITEM_WIDTH, ITEM_WIDTH, BOX_WIDTH, value1, value2);
+      this.shape = new PairShape(OPTION_TOOL_X, OPTION_TOOL_Y, value1, value2);
     }
     this.shape.growUp();
   },
@@ -310,13 +321,13 @@ Page({
 
     let centerGridPos = POS_TRANS.id2GridPos(centerId);
     let viewPos = POS_TRANS.gridPos2ViewPos (centerGridPos.x, centerGridPos.y);
-    let centerTile = new SingleShape(viewPos.x, viewPos.y, ITEM_WIDTH, ITEM_WIDTH, currentValue);
+    let centerTile = new SingleTile(viewPos.x, viewPos.y, currentValue);
 
     var moveTiles = [];
     for (var i = 0; i < findTileIds.length; i++) {
       let gridPos = POS_TRANS.id2GridPos(findTileIds[i]);
       let viewPos = POS_TRANS.gridPos2ViewPos (gridPos.x, gridPos.y);
-      let tile = new SingleShape(viewPos.x, viewPos.y, ITEM_WIDTH, ITEM_WIDTH, currentValue);
+      let tile = new SingleTile(viewPos.x, viewPos.y, currentValue);
       moveTiles.push(tile);
     }
 
@@ -324,7 +335,7 @@ Page({
       that.onMergeComplete(centerGridPos, currentValue, findTileIds);
     })
 
-    animationController.startMergeAnimation(mergeAnimation);
+    animationController.startAnimation(mergeAnimation);
   },
 
   removeTileById: function (id) {
@@ -409,7 +420,6 @@ Page({
       }
     }
 
-    console.log(result);
     return result;
   },
 
