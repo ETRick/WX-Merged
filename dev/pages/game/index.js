@@ -43,9 +43,9 @@ const DIRECTIONS = [
   { x: 0, y: 1 },
 ];
 
-// 游戏格子区域的起始位置
+// 游戏格子区域的起始位置,默认为2
 // 当前合成到的最大的数组
-var currentMaxNumber = 7;
+var currentMaxNumber = 2;
 
 var animationFrame = function (callback, caller) {
   setTimeout(function () {
@@ -157,8 +157,10 @@ Page({
 
   // 生成一個填充物
   generateOption: function () {
+    // if(true){
     if (this.isNextSingle()) {
       let value = Math.floor(Math.random() * currentMaxNumber + 1);
+      // value = 7;
       this.shape = new SingleTile(OPTION_TOOL_X, OPTION_TOOL_Y, value);
     } else {
       var value1, value2;

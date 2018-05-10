@@ -13,6 +13,7 @@ var ExploreShape = (function () {
     this.currentScale = 0;
     this.generateGradientColors();
     this.scaleData = null;
+    this.visible = false;
   }
 
   ExploreShape.prototype = {
@@ -34,6 +35,7 @@ var ExploreShape = (function () {
           changeValue: destScale - that.currentScale,
           ease: ease || Tween.linear,
         };
+        this.visible = true;
         that.scaleData = scaleData;
       }, delayTime);
 
@@ -69,6 +71,8 @@ var ExploreShape = (function () {
     },
 
     draw: function (ctx) {
+      if(!this.visible)
+        return;
       ctx.save();
       const grd = ctx.createCircularGradient(1.5 * ITEM_WIDTH, 1.5 * ITEM_WIDTH, 2 * ITEM_WIDTH)
       grd.addColorStop(0, this.gradientColors[0]);

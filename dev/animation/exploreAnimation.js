@@ -28,7 +28,7 @@ var ExploreAnimation = (function () {
       new ExploreShape(EXPLOR_SAHPE_COLORS[2])
     ];
 
-    this.shapes.forEach((s)=>{
+    this.shapes.forEach((s) => {
       s.x = this.x;
       s.y = this.y;
     })
@@ -48,12 +48,14 @@ var ExploreAnimation = (function () {
 
     draw: function (ctx) {
       ctx.save();
-      let alpha = 1-  Math.max((util.getTimeNow() - this.startTime) / this.duration);
+      let alpha = 1 - Math.max((util.getTimeNow() - this.startTime) / this.duration);
       alpha = Math.max(alpha, 0);
       ctx.setGlobalAlpha(alpha);
+      let index = 1;
       this.shapes.forEach((s) => {
         s.draw(ctx);
       });
+
       ctx.restore();
     },
 
