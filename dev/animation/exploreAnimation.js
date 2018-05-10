@@ -1,4 +1,7 @@
 const ExploreShape = require("../shape/exploreShape.js");
+const util = require('../utils/util.js');
+const Tween = require("../utils/tween.js");
+
 var EXPLOR_SAHPE_COLORS = [
   { r: 254, g: 67, b: 101 },
   { r: 250, g: 218, b: 141 },
@@ -13,14 +16,27 @@ var ExploreAnimation = (function () {
     this.y = y;
     this.duration = duration;
     this.callback = callback;
+    this.startTime = util.getTimeNow();
+    this.lastTime = this.startTime;
+    this.duration = duration || 1000;
 
-    this.exploreCount = 0;
+    this.exploredCount = 0;
 
     this.shapes = [
-      new ExploreShape(EXPLOR_SAHPE_COLORS[0])
-      // new ExploreShape(EXPLOR_SAHPE_COLORS[1]),
-      // new ExploreShape(EXPLOR_SAHPE_COLORS[2])
+      new ExploreShape(EXPLOR_SAHPE_COLORS[0]),
+      new ExploreShape(EXPLOR_SAHPE_COLORS[1]),
+      new ExploreShape(EXPLOR_SAHPE_COLORS[2])
     ];
+
+    this.shapes.forEach((s)=>{
+      s.x = this.x;
+      s.y = this.y;
+    })
+
+    this.shapes[0].scaleTo(0, 1, this.duration, Tween.backOut);
+    this.shapes[1].scaleTo(this.duration * 0.2, 0.8, this.duration * 0.8, Tween.backOut);
+    this.shapes[2].scaleTo(this.duration * 0.4, 0.65, this.duration * 0.6, Tween.backOut);
+
   }
 
   ExploreAnimation.prototype = {
@@ -31,9 +47,14 @@ var ExploreAnimation = (function () {
     },
 
     draw: function (ctx) {
-      this.shapes.forEach((s)=>{
+      ctx.save();
+      let alpha = 1-  Math.max((util.getTimeNow() - this.startTime) / this.duration);
+      alpha = Math.max(alpha, 0);
+      ctx.setGlobalAlpha(alpha);
+      this.shapes.forEach((s) => {
         s.draw(ctx);
       });
+      ctx.restore();
     },
 
     complete: function () {

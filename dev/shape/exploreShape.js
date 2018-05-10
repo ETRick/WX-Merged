@@ -13,28 +13,30 @@ var ExploreShape = (function () {
     this.currentScale = 0;
     this.generateGradientColors();
     this.scaleData = null;
-
-    this.scaleTo(1, 2000, Tween.backOut);
   }
 
   ExploreShape.prototype = {
 
-    scaleTo: function (destScale, duration, ease, callback) {
-      if (this.scaleData) {
-        // TODO 结束上一次的rotateData
-      }
-      let startTime = util.getTimeNow();
-      let scaleData = {
-        startValue: this.currentScale,
-        destValue: destScale,
-        lastTime: startTime,
-        startTime: startTime,
-        duration: duration,
-        callback: callback,
-        changeValue: destScale - this.currentScale,
-        ease: ease || Tween.linear,
-      };
-      this.scaleData = scaleData;
+    scaleTo: function (delayTime = 0, destScale, duration, ease, callback) {
+      let that = this;
+      setTimeout(() => {
+        if (this.scaleData) {
+          // TODO 结束上一次的rotateData
+        }
+        let startTime = util.getTimeNow();
+        let scaleData = {
+          startValue: that.currentScale,
+          destValue: destScale,
+          lastTime: startTime,
+          startTime: startTime,
+          duration: duration,
+          callback: callback,
+          changeValue: destScale - that.currentScale,
+          ease: ease || Tween.linear,
+        };
+        that.scaleData = scaleData;
+      }, delayTime);
+
     },
 
     // TODO scaleData 等data封装，tween调用封装
@@ -67,6 +69,7 @@ var ExploreShape = (function () {
     },
 
     draw: function (ctx) {
+      ctx.save();
       const grd = ctx.createCircularGradient(1.5 * ITEM_WIDTH, 1.5 * ITEM_WIDTH, 2 * ITEM_WIDTH)
       grd.addColorStop(0, this.gradientColors[0]);
       grd.addColorStop(0.6, this.gradientColors[1]);

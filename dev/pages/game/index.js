@@ -45,7 +45,7 @@ const DIRECTIONS = [
 
 // 游戏格子区域的起始位置
 // 当前合成到的最大的数组
-var currentMaxNumber = 2;
+var currentMaxNumber = 7;
 
 var animationFrame = function (callback, caller) {
   setTimeout(function () {
@@ -77,14 +77,6 @@ Page({
    */
   onLoad: function (options) {
     this.initMap();
-
-    setTimeout(()=>{
-      var exploreAnimation = new ExploreAnimation(140, 300, 200000, () => {
-        console.log("explorAnimationComplete");
-      });
-      animationController.startAnimation(exploreAnimation);
-      
-    }, 100);
   },
 
   /**
@@ -224,6 +216,13 @@ Page({
       let gridPos = { x: gridX, y: gridY };
       this.addTile(gridPos.x, gridPos.y, values[i] || this.shape.value);
     }
+    
+    if (this.isGameOver()){
+      wx.showToast({
+        title: '游戏失败,手动重开'
+      });
+    }
+    
 
     setTimeout(() => {
       that.shape = null;
@@ -231,6 +230,14 @@ Page({
     setTimeout(() => {
       that.generateOption();
     }, STEP_OVER_WATI_TIME);
+  },
+
+  isGameOver: function(){
+    for (var id = 0; id < MAP_SIZE * MAP_SIZE; id++) {
+      if(!this.data.tileOccpuied[id])
+      return false;
+    }
+    return true;
   },
 
   // 向地图添加一个css绘制的tile
@@ -320,13 +327,13 @@ Page({
     }, FRAME_INTERVAL * 2);
 
     let centerGridPos = POS_TRANS.id2GridPos(centerId);
-    let viewPos = POS_TRANS.gridPos2ViewPos (centerGridPos.x, centerGridPos.y);
+    let viewPos = POS_TRANS.gridPos2ViewPos(centerGridPos.x, centerGridPos.y);
     let centerTile = new SingleTile(viewPos.x, viewPos.y, currentValue);
 
     var moveTiles = [];
     for (var i = 0; i < findTileIds.length; i++) {
       let gridPos = POS_TRANS.id2GridPos(findTileIds[i]);
-      let viewPos = POS_TRANS.gridPos2ViewPos (gridPos.x, gridPos.y);
+      let viewPos = POS_TRANS.gridPos2ViewPos(gridPos.x, gridPos.y);
       let tile = new SingleTile(viewPos.x, viewPos.y, currentValue);
       moveTiles.push(tile);
     }
@@ -347,8 +354,12 @@ Page({
   // merge结束后
   onMergeComplete: function (centerGridPos, currentValue, findTileIds) {
     if (currentValue == 7) {
-      console.log("爆炸");
-      //3X3的格子爆炸
+      // 播放爆炸动画
+      let exploreCenterViewPos = POS_TRANS.gridPos2ViewPos(centerGridPos.x, centerGridPos.y);
+      var exploreAnimation = new ExploreAnimation(exploreCenterViewPos.x, exploreCenterViewPos.y, 800, null);
+      animationController.startAnimation(exploreAnimation);
+
+      //3X3的格子消除掉
       for (var col = centerGridPos.x - 1; col <= centerGridPos.x + 1; col++) {
         for (var row = centerGridPos.y - 1; row <= centerGridPos.y + 1; row++) {
           let id = POS_TRANS.gridPos2Id(col, row);
@@ -364,7 +375,7 @@ Page({
       }
     } else {
       this.addTile(centerGridPos.x, centerGridPos.y, currentValue + 1);
-      
+
     }
     this.data.score += currentValue * (findTileIds.length + 1);
     this.setData({
@@ -397,7 +408,7 @@ Page({
         let id = POS_TRANS.gridPos2Id(gridX, gridY);
         if (!this.data.tileOccpuied[id]) {
           if (!targetRelativeDist) {
-            let targetViewPos = POS_TRANS.gridPos2ViewPos (gridX, gridY);
+            let targetViewPos = POS_TRANS.gridPos2ViewPos(gridX, gridY);
             targetGridPosList = [];
             targetRelativeDist = {
               x: targetViewPos.x - x - GAME_AREA.left,
@@ -466,7 +477,9 @@ Page({
     if (this.inTouch) {
       let { targetRelativeDist, targetGridPosList } = this.getFitRelativeDist(this.lastPos);
       if (targetRelativeDist) {
-
+        console.log("---------------------------------------------");
+        console.log(targetRelativeDist);
+        console.log(targetGridPosList);
         if (Math.abs(targetRelativeDist.x) > 200 || Math.abs(targetRelativeDist.y) > 200) {
           console.log("纯debug");
           this.getFitRelativeDist(this.lastPos);
