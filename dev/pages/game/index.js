@@ -1,6 +1,7 @@
 // pages/game/index.js
 
 const util = require('../../utils/util.js');
+const mathHelper = require("../../utils/mathHelper.js")
 const Shapes = require('../../shape/shapes.js');
 const animations = require('../../animation/animations.js');
 const COLORS = require("../../utils/colors.js");
@@ -482,7 +483,7 @@ Page({
         if (!this.inTouch) {
           this.shape.rotate(90, ROTATE_TIME);
         }
-      }, 100);
+      }, 200);
     }
   },
 
@@ -491,13 +492,18 @@ Page({
     if (!this.inTouch)
       return;
     let pos = e.touches[0];
-    if(util.distance(pos, this.lastPos) < 2){
+    if (mathHelper.distance(pos, this.lastPos) < 2){
       return ;
     }
     let x = pos.x;
     let y = pos.y - OFFESET_Y;
+
+    let conficient = 0.8
+    let x1 = mathHelper.lerp(this.shape.x, x, conficient);
+    let y1 = mathHelper.lerp(this.shape.y, y, conficient);
     this.shape.setPos(x, y);
     this.lastPos = pos;
+
   },
 
   // 绘制结束 手指抬起
