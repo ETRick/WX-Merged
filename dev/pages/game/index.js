@@ -37,6 +37,8 @@ var {
   MERGE_TIME
 } = require("../../consts.js");
 
+console.log(BOX_WIDTH);
+
 const DIRECTIONS = [
   { x: -1, y: 0 },
   { x: 0, y: -1 },
@@ -181,10 +183,8 @@ Page({
 
   // 生成一個填充物
   generateOption: function () {
-    // if(true){
     if (this.isNextSingle()) {
       let value = Math.floor(Math.random() * this.currentMaxNumber + 1);
-      // value = 7;
       this.shape = new SingleTile(OPTION_TOOL_X, OPTION_TOOL_Y, value);
     } else {
       var value1, value2;
@@ -389,7 +389,7 @@ Page({
       for (var col = centerGridPos.x - 1; col <= centerGridPos.x + 1; col++) {
         for (var row = centerGridPos.y - 1; row <= centerGridPos.y + 1; row++) {
           let id = POS_TRANS.gridPos2Id(col, row);
-          if (!id)
+          if (id === false)
             continue;
           // 获取id然后把值加上去
           let value = this.data.tileValue[id];
@@ -413,7 +413,13 @@ Page({
   },
 
   // 获取可以填充位置与当前位置的距离，二位{x,y}
-  getFitRelativeDist: function (pos) {
+  getFitRelativeDist: function (pos, isDebug) {
+
+    var debugLog = function(logItem){
+      if(isDebug){
+        console.log(logItem);
+      }
+    }
     var result;
     var targetRelativeDist; //二维，x， y
     var targetGridPosList;
@@ -422,7 +428,10 @@ Page({
       y: pos.y - OFFESET_Y - GAME_AREA.top
     }
 
+    debugLog(detectViewPos);
+
     let allSingleShapeViewPosList = this.shape.getAllSingleOneRelativePoses();
+    debugLog(allSingleShapeViewPosList);
 
     for (var i = 0; i < allSingleShapeViewPosList.length; i++) {
       let relativePos = allSingleShapeViewPosList[i];
@@ -435,6 +444,12 @@ Page({
         if (!this.data.tileOccpuied[id]) {
           if (!targetRelativeDist) {
             let targetViewPos = POS_TRANS.gridPos2ViewPos(gridX, gridY);
+            console.log({
+              gridx: gridX,
+              gridy: gridY,
+              id: id
+            })
+            debugLog(targetViewPos);
             targetGridPosList = [];
             targetRelativeDist = {
               x: targetViewPos.x - x - GAME_AREA.left,
@@ -517,7 +532,7 @@ Page({
         console.log(targetGridPosList);
         if (Math.abs(targetRelativeDist.x) > 200 || Math.abs(targetRelativeDist.y) > 200) {
           console.log("纯debug");
-          this.getFitRelativeDist(this.lastPos);
+          this.getFitRelativeDist(this.lastPos, true);
         }
 
         this.shape.move(targetRelativeDist.x, targetRelativeDist.y, FIT_MOVE_TIME, () => {

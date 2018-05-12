@@ -27,17 +27,9 @@ var SingleTile = (function () {
     },
 
     growUp: function () {
-      this.currentScale = 0;
-      let startTime = util.getTimeNow();
-      let scaleData = {
-        destScale: 1,
-        startScale: this.currentScale,
-        lastTime: startTime,
-        startTime: startTime,
-        duration: 200,
-        callback: null,
-      };
-      this.scaleData = scaleData;
+      this.tiles.forEach(t=>{
+        t.growUp();
+      })
     },
 
     update: function () {
@@ -90,6 +82,10 @@ var SingleTile = (function () {
           scaleData.lastTime = time;
         }
       }
+
+      this.tiles.forEach((t)=>{
+        t.update();
+      })
     },
 
     setValue: function (value) {
@@ -114,13 +110,13 @@ var SingleTile = (function () {
       if (!this.canTouch())
         return false;
 
-      if (posX > this.x + BOX_WIDTH * 0.5)
+      if (posX > this.x + BOX_WIDTH * 0.8)
         return false;
-      if (posX < this.x - BOX_WIDTH * 0.5)
+      if (posX < this.x - BOX_WIDTH * 0.8)
         return false;
-      if (posY > this.y + BOX_WIDTH * 0.5)
+      if (posY > this.y + BOX_WIDTH * 0.8)
         return false;
-      if (posY < this.y - BOX_WIDTH * 0.5)
+      if (posY < this.y - BOX_WIDTH * 0.8)
         return false;
 
       return true;

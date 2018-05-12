@@ -20,10 +20,13 @@ var Tile = (function () {
     this.currentScale = 1;
     this.moveData = null;
     this.rotateData = null;
+    this.visible = true;
   }
 
   Tile.prototype = {
     draw: function (ctx, isParentMatrix) {
+      if (!this.visible || this.currentScale < 0.1)
+        return;
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.scale(this.currentScale, this.currentScale);
@@ -37,7 +40,7 @@ var Tile = (function () {
     },
 
     growUp: function () {
-      this.currentScale = 0.3;
+      this.currentScale = 0;
       let startTime = util.getTimeNow();
       let scaleData = {
         destScale: 1,

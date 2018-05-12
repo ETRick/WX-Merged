@@ -31,17 +31,9 @@ var PairTile = (function () {
     },
 
     growUp: function () {
-      let startTime = util.getTimeNow();
-      this.currentScale = 0;
-      let scaleData = {
-        destScale: 1,
-        startScale: 0,
-        lastTime: startTime,
-        startTime: startTime,
-        duration: 200,
-        callback: null,
-      };
-      this.scaleData = scaleData;
+      this.tiles.forEach(t => {
+        t.growUp();
+      })
     },
 
     update: function () {
@@ -94,6 +86,10 @@ var PairTile = (function () {
           scaleData.lastTime = time;
         }
       }
+
+      this.tiles.forEach((t) => {
+        t.update();
+      })
     },
 
     setValue: function (value) {
@@ -123,22 +119,22 @@ var PairTile = (function () {
         return false;
 
       if (this.isVertical) {
-        if (posX > this.x + BOX_WIDTH * 0.5)
+        if (posX > this.x + BOX_WIDTH * 0.8)
           return false;
-        if (posX < this.x - BOX_WIDTH * 0.5)
+        if (posX < this.x - BOX_WIDTH * 0.8)
           return false;
-        if (posY > this.y + BOX_WIDTH)
+        if (posY > this.y + BOX_WIDTH * 1.3)
           return false;
-        if (posY < this.y - BOX_WIDTH)
+        if (posY < this.y - BOX_WIDTH * 1.3)
           return false;
       } else {
-        if (posX > this.x + BOX_WIDTH)
+        if (posX > this.x + BOX_WIDTH * 1.3)
           return false;
-        if (posX < this.x - BOX_WIDTH)
+        if (posX < this.x - BOX_WIDTH * 1.3)
           return false;
-        if (posY > this.y + BOX_WIDTH * 0.5)
+        if (posY > this.y + BOX_WIDTH * 0.8)
           return false;
-        if (posY < this.y - BOX_WIDTH * 0.5)
+        if (posY < this.y - BOX_WIDTH * 0.8)
           return false;
       }
 
