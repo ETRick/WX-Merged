@@ -32,4 +32,18 @@ var getTimeNow = function () {
   return +new Date();
 };
 
-module.exports = { formatTime, rpx2px, jsonLength, getTimeNow }
+var setLocalData = function(key,data){
+  wx.setStorageSync(key, data);
+};
+
+var getLocalData = function(key){
+  return wx.getStorageSync(key);
+};
+
+var distance = function(posA, posB){
+  let a = Math.pow(posA.x -posB.x, 2);
+  let b =Math.pow(posA.y - posB.y, 2);
+  return Math.pow(a + b, 0.5);
+}
+
+module.exports = { formatTime, rpx2px, jsonLength, getTimeNow, setLocalData, getLocalData, distance }

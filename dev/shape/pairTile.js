@@ -8,7 +8,7 @@ var PairTile = (function () {
     this.x = x;
     this.y = y;
     this.isVertical = false;
-    this.currentAngle = 0;    //degree
+    this.currentAngle = 0;    //growUp
     this.currentScale = 1;
     this.moveData = null;
     this.rotateData = null;
@@ -32,6 +32,7 @@ var PairTile = (function () {
 
     growUp: function () {
       let startTime = util.getTimeNow();
+      this.currentScale = 0;
       let scaleData = {
         destScale: 1,
         startScale: 0,

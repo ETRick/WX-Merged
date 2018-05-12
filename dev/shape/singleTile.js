@@ -27,7 +27,7 @@ var SingleTile = (function () {
     },
 
     growUp: function () {
-      this.currentScale = 0.3;
+      this.currentScale = 0;
       let startTime = util.getTimeNow();
       let scaleData = {
         destScale: 1,
@@ -114,13 +114,13 @@ var SingleTile = (function () {
       if (!this.canTouch())
         return false;
 
-      if (posX > this.x + this.width * 0.5)
+      if (posX > this.x + BOX_WIDTH * 0.5)
         return false;
-      if (posX < this.x - this.width * 0.5)
+      if (posX < this.x - BOX_WIDTH * 0.5)
         return false;
-      if (posY > this.y + this.height * 0.5)
+      if (posY > this.y + BOX_WIDTH * 0.5)
         return false;
-      if (posY < this.y - this.height * 0.5)
+      if (posY < this.y - BOX_WIDTH * 0.5)
         return false;
 
       return true;

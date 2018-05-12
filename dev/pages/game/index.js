@@ -43,10 +43,6 @@ const DIRECTIONS = [
   { x: 0, y: 1 },
 ];
 
-// 游戏格子区域的起始位置,默认为2
-// 当前合成到的最大的数组
-var currentMaxNumber = 2;
-
 var animationFrame = function (callback, caller) {
   setTimeout(function () {
     callback.call(caller);
@@ -58,6 +54,9 @@ Page({
   shape: null,
   inTouch: false,
   lastPos: null,
+  // 游戏格子区域的起始位置,默认为2
+  // 当前合成到的最大的数组
+  currentMaxNumber: 2,
 
   /**
    * 页面的初始数据
@@ -70,23 +69,21 @@ Page({
     tileValue: [],
     tileOccpuied: [],
     tileImgSrc: [],
+    hideCanvas: false,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.initMap();
+    this.startNewGame();
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    this.ctx = wx.createCanvasContext("game-canvas", this);
-    this.initFontSetting();
-    animationFrame(this.update, this);
-    this.generateOption();
+    
   },
 
   // 字体设置
@@ -155,18 +152,44 @@ Page({
     });
   },
 
+  startNewGame: function(){
+    console.log("startNewGame");
+    this.shape= null,
+    this.inTouch=false,
+    this.lastPos= null,
+    this.currentMaxNumber=2;
+
+    this.setData({
+        score: 0,
+        tilePosXList: null,
+        tilePosYListt: null,
+        tileColor: [],
+        tileValue: [],
+        tileOccpuied: [],
+        tileImgSrc: [],
+        hideCanvas: false,
+    });
+
+    this.initMap();
+
+    this.ctx = wx.createCanvasContext("game-canvas", this);
+    this.initFontSetting();
+    animationFrame(this.update, this);
+    this.generateOption();
+  },
+
   // 生成一個填充物
   generateOption: function () {
     // if(true){
     if (this.isNextSingle()) {
-      let value = Math.floor(Math.random() * currentMaxNumber + 1);
+      let value = Math.floor(Math.random() * this.currentMaxNumber + 1);
       // value = 7;
       this.shape = new SingleTile(OPTION_TOOL_X, OPTION_TOOL_Y, value);
     } else {
       var value1, value2;
-      value1 = Math.floor(Math.random() * currentMaxNumber + 1);
+      value1 = Math.floor(Math.random() * this.currentMaxNumber + 1);
       while (!value2 || value2 == value1) {
-        value2 = Math.floor(Math.random() * currentMaxNumber + 1);
+        value2 = Math.floor(Math.random() * this.currentMaxNumber + 1);
       }
       this.shape = new PairShape(OPTION_TOOL_X, OPTION_TOOL_Y, value1, value2);
     }
@@ -245,8 +268,8 @@ Page({
   // 向地图添加一个css绘制的tile
   addTile: function (gridX, gridY, value) {
     // 更新当前合成的最大值
-    if (value > currentMaxNumber) {
-      currentMaxNumber = value;
+    if (value > this.currentMaxNumber) {
+      this.currentMaxNumber = value;
     }
 
     let id = POS_TRANS.gridPos2Id(gridX, gridY);
@@ -443,10 +466,11 @@ Page({
   },
 
   clickPause: function (e) {
-    wx.showToast({
-      title: 'TODO 暂停',
-    })
-    console.log("Pause");
+    // this.setData({
+    //   hideCanvas: true
+    // });
+
+    this.startNewGame();
   },
 
   touchStart: function (e) {
@@ -467,6 +491,9 @@ Page({
     if (!this.inTouch)
       return;
     let pos = e.touches[0];
+    if(util.distance(pos, this.lastPos) < 2){
+      return ;
+    }
     let x = pos.x;
     let y = pos.y - OFFESET_Y;
     this.shape.setPos(x, y);
