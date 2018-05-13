@@ -10,8 +10,10 @@
     <view class="button-container">
       <button class="start-game" bindtap='startGame'>开始游戏</button>
       <view class="tool-bar">
-        <button open-type='share' class="btn-share" style="background-image:url(/images/share.png);" plain='true'>
-        </button>
+        <image src="/images/share.png">
+          <button open-type='share' class="btn-share" plain="true">
+          </button>
+        </image>
         <image src="/images/微信公众号.png" bindtap='follow'></image>
       </view>
     </view>
