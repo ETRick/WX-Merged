@@ -1,0 +1,10 @@
+<!--components/dialog/index.wxml-->
+<view class="custom-dialog" hidden="{{hidden}}">
+  <view class="container">
+    <view class="backdrop">
+    </view>
+    <view class="inner-dialog">
+      <slot></slot>
+    </view>
+  </view>
+</view>

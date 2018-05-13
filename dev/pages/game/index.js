@@ -37,8 +37,6 @@ var {
   MERGE_TIME
 } = require("../../consts.js");
 
-console.log(BOX_WIDTH);
-
 const DIRECTIONS = [
   { x: -1, y: 0 },
   { x: 0, y: -1 },
@@ -57,6 +55,8 @@ Page({
   shape: null,
   inTouch: false,
   lastPos: null,
+  inGame: false,
+  pauseUI: null,
   // 游戏格子区域的起始位置,默认为2
   // 当前合成到的最大的数组
   currentMaxNumber: 2,
@@ -66,6 +66,7 @@ Page({
    */
   data: {
     score: 0,
+    bestScore: 0,
     tilePosXList: null,   //index 为 id starting from 0, id = row * colCont + col;
     tilePosYListt: null,
     tileColor: [],
@@ -78,16 +79,38 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function (options) { 
+    this.gameOverUI = this.selectComponent("#ui-gameover");
+    this.pauseUI = this.selectComponent("#ui-pauseui");
     this.startNewGame();
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-    
+  showGameOverUI: function () {
+    this.inGame = false;
+    this.data.bestScore = util.getLocalData("bestScore");
+    if (this.data.score > this.data.bestScore) {
+      this.data.bestScore = this.data.score;
+      util.setLocalData("bestScore", this.data.bestScore);
+    }
+    this.setData({
+      bestScore: this.data.bestScore,
+      hideCanvas: true,
+    });
+    this.gameOverUI.show();
   },
+
+  replay: function () {
+    this.pauseUI.hide();
+    this.startNewGame();
+  },
+
+  closePause: function () {
+    this.setData({
+      hideCanvas: false,
+    });
+    this.pauseUI.hide();
+  },
+  // -------------------------------------------------------------
 
   // 字体设置
   initFontSetting: function () {
@@ -106,6 +129,9 @@ Page({
 
   // 逻辑刷新
   logicUpdate: function () {
+    if (!this.inGame)
+      return;
+
     this.shape && this.shape.update();
     animationController.update();
   },
@@ -155,22 +181,22 @@ Page({
     });
   },
 
-  startNewGame: function(){
-    console.log("startNewGame");
-    this.shape= null,
-    this.inTouch=false,
-    this.lastPos= null,
-    this.currentMaxNumber=2;
+  startNewGame: function () {
+    this.shape = null,
+      this.inTouch = false,
+      this.lastPos = null,
+      this.currentMaxNumber = 2;
+    this.inGame = true;
 
     this.setData({
-        score: 0,
-        tilePosXList: null,
-        tilePosYListt: null,
-        tileColor: [],
-        tileValue: [],
-        tileOccpuied: [],
-        tileImgSrc: [],
-        hideCanvas: false,
+      score: 0,
+      tilePosXList: null,
+      tilePosYListt: null,
+      tileColor: [],
+      tileValue: [],
+      tileOccpuied: [],
+      tileImgSrc: [],
+      hideCanvas: false,
     });
 
     this.initMap();
@@ -200,6 +226,7 @@ Page({
   // 接下去产生的是不是单个的
   isNextSingle: function () {
     if (this.hasContiousPos()) {
+      return false;
       return Math.random() > 0.5;
     } else {
       return true;
@@ -242,13 +269,6 @@ Page({
       let gridPos = { x: gridX, y: gridY };
       this.addTile(gridPos.x, gridPos.y, values[i] || this.shape.value);
     }
-    
-    if (this.isGameOver()){
-      wx.showToast({
-        title: '游戏失败,手动重开'
-      });
-    }
-    
 
     setTimeout(() => {
       that.shape = null;
@@ -258,11 +278,16 @@ Page({
     }, STEP_OVER_WATI_TIME);
   },
 
-  isGameOver: function(){
-    for (var id = 0; id < MAP_SIZE * MAP_SIZE; id++) {
-      if(!this.data.tileOccpuied[id])
+  isGameOver: function () {
+    if (!animationController.isEmpty()){
       return false;
     }
+
+    for (var id = 0; id < MAP_SIZE * MAP_SIZE; id++) {
+      if (!this.data.tileOccpuied[id])
+        return false;
+    }
+
     return true;
   },
 
@@ -329,6 +354,14 @@ Page({
 
     if (findTiles.length >= 2) {
       this.mergeTiles(findTiles, nowId);
+    }else{
+      if (this.isGameOver()) {
+        setTimeout(
+          () => {
+            that.showGameOverUI();
+          }, 400
+        )
+      }
     }
   },
 
@@ -415,8 +448,8 @@ Page({
   // 获取可以填充位置与当前位置的距离，二位{x,y}
   getFitRelativeDist: function (pos, isDebug) {
 
-    var debugLog = function(logItem){
-      if(isDebug){
+    var debugLog = function (logItem) {
+      if (isDebug) {
         console.log(logItem);
       }
     }
@@ -482,11 +515,13 @@ Page({
   },
 
   clickPause: function (e) {
-    // this.setData({
-    //   hideCanvas: true
-    // });
+    this.setData({
+      hideCanvas: true
+    });
 
-    this.startNewGame();
+    this.pauseUI.show();
+
+    // this.startNewGame();
   },
 
   touchStart: function (e) {
@@ -507,8 +542,8 @@ Page({
     if (!this.inTouch)
       return;
     let pos = e.touches[0];
-    if (mathHelper.distance(pos, this.lastPos) < 2){
-      return ;
+    if (mathHelper.distance(pos, this.lastPos) < 2) {
+      return;
     }
     let x = pos.x;
     let y = pos.y - OFFESET_Y;

@@ -1,0 +1,16 @@
+<!-- 分享复活增加步数UI  -->
+<dialog id='dialog' class="dialog">
+    <view class="ui-revive">
+      <text class="title">当前阶段</text>
+      <text class="score">{{score}}</text>
+      <view class="countdown">
+        <text>{{reviveCount}}</text>
+      </view>
+      <button class="share-button" id='revive' open-type="share">
+        <text>分享到群【继续挑战】</text>
+      </button>
+      <text class="skip-button" bindtap="_gameOver" hidden='{{reviveCount > 9}}'>本次放弃>></text>
+      <view class="underline"></view>
+    </view>
+  </dialog>
+<!-- 分享复活增加步数UI end  -->

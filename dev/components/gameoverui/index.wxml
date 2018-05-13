@@ -1,0 +1,42 @@
+<!-- 游戏结束UI  -->
+<dialog id='dialog' class="dialog">
+  <view class="leader-board">
+    <view class="title">
+      <view class="title-bg left">
+        <view class="left-arrow"></view>
+      </view>
+      <view class="title-score-box">
+        <text class="label-score">分数</text>
+        <text class="text-score">{{score}}</text>
+      </view>
+      <view class="title-bg right">
+        <view class="right-arrow"></view>
+      </view>
+    </view>
+    <view class="content">
+      <view class="congrate-label-box">
+        <text>最高分数</text>
+      </view>
+      <view class="rate-box">
+        <view class="rect">
+          <text>{{bestScore}}</text>
+        </view>
+      </view>
+      <view class="tip-box">
+        <view class="rect">
+          <text>当前分数超过了全国{{degree}}%的用户</text>
+        </view>
+      </view>
+    </view>
+    <view class="foot">
+      <button class="btn-share" id='gameover' open-type="share">
+        <text>挑战好友</text>
+      </button>
+      <button class="btn-retry" bindtap="_retry">
+        <text>再来一次</text>
+      </button>
+    </view>
+    <text class="btn-return" bindtap='_returnHome'>返回首页>></text>
+  </view>
+</dialog>
+<!-- 游戏结束UI end  --><!--components/gameoverui/index.wxml-->

@@ -1,0 +1,71 @@
+/* 死亡复活UI ------------------------------------------------------------------------------ */
+.ui-revive {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ui-revive .title {
+  margin-top: 100rpx;
+  width: 100%;
+  height: 60rpx;
+  color: white;
+}
+
+.ui-revive .score {
+  width: 100%;
+  height: 60rpx;
+  font-size: 120rpx;
+  font-weight: bold;
+  color: white;
+}
+
+.ui-revive .countdown {
+  width: 200rpx;
+  height: 200rpx;
+  margin-top: 180rpx;
+  background-color: transparent; /* Can be set to transparent */
+  border: 13rpx #ff9800 solid;
+  border-radius: 120rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-revive .countdown text {
+  color: #ff9800;
+  font-size: 110rpx;
+}
+
+.ui-revive .share-button {
+  margin-top: 200rpx;
+  background-color: #94d02f;
+  color: white;
+  animation: 1s linear infinite shake-tip;
+}
+
+.ui-revive .skip-button {
+  margin-top: 20rpx;
+  color: white;
+  font-size: 30rpx;
+}
+
+.ui-revive .underline {
+  width: 170rpx;
+  height: 2rpx;
+  background-color: white;
+}
+
+@keyframes shake-tip {
+  0% {transform: rotate(0deg);}
+  50% {transform: rotate(0deg);}
+  60% {transform: rotate(0deg);}
+  70% {transform: rotate(3deg);}
+  80% {transform: rotate(-3deg);}
+  90% {transform: rotate(3deg);}
+  100% {transform: rotate(0deg);}
+}
+/* 死亡复活UI end ------------------------------------------------------------------------------ */

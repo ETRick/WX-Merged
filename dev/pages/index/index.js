@@ -42,6 +42,10 @@ Page({
         }
       })
     }
+
+    let testui = this.selectComponent("#ui-testui");
+    console.log(testui);
+    testui.show();
   },
   getUserInfo: function(e) {
     console.log(e)

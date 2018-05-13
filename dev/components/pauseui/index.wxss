@@ -1,0 +1,60 @@
+/* components/pauseui/index.wxss */
+
+.pause-container {
+  width: 80%;
+  height: 20%;
+  background: lightslategray;
+  display: flex;
+  opacity: 0.9;
+  border-radius: 25rpx;
+  font-size: 50rpx;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.pause-container .first-row {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+
+.pause-container .first-row .btn-retry {
+  width: 70%;
+  margin-top: 5%;
+  height: 60%;
+  background-color: #fd5a5a;
+  color: white;
+  border-radius: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pause-container .first-row .btn-close {
+  position: absolute;
+  top: 0%;
+  right: 3%;
+  color: white;
+}
+
+.pause-container .second-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 50%;
+}
+
+.pause-container .second-row .btn-returnHome {
+  width: 64rpx;
+  height: 64rpx;
+}
+
+.pause-container .second-row .btn-enable-audio {
+  width: 64rpx;
+  height: 64rpx;
+}

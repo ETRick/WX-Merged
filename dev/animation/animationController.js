@@ -12,6 +12,10 @@ var AnimationController = {
     this.currentAnimations.push(mergeAnimation);
   },
 
+  isEmpty: function(){
+    return this.currentAnimations.length === 0;
+  },
+
   update: function () {
     var completeIndexList = [];
     for (var i = 0; i < this.currentAnimations.length; i++) {

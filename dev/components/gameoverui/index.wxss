@@ -1,0 +1,203 @@
+/* 游戏结束UI  */
+.dialog {
+  z-index: 10;
+}
+.dialog .leader-board {
+  width: 85%;
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog .leader-board .title {
+  position: relative;
+  width: 100%;
+  height: 15%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+/* title左右两边的两个方块 */
+
+.dialog .leader-board .title .title-bg {
+  height: 75%;
+  width: 20%;
+  background: #CCCCCC;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  flex-direction: row;
+}
+
+/* 控制三角形布局-左 */
+
+.dialog .leader-board .title .left {
+  border-top-left-radius: 20rpx;
+  justify-content: flex-end;
+}
+
+/* 控制三角形布局-右 */
+
+.dialog .leader-board .title .right {
+  border-top-right-radius: 20rpx;
+  justify-content: flex-start;
+}
+
+/* 朝左的三角形 */
+
+.dialog .leader-board .title .left-arrow {
+  width: 0;
+  height: 0;
+  border-top: 50rpx solid transparent;
+  border-right: 37rpx solid silver; /* 边 x 1.7*/
+  border-bottom: 50rpx solid transparent;
+}
+
+/* 朝右的三角形 */
+
+.dialog .leader-board .title .right-arrow {
+  width: 0;
+  height: 0;
+  border-top: 50rpx solid transparent;
+  border-left: 37rpx solid silver; /* 边 x 1.7*/
+  border-bottom: 50rpx solid transparent;
+}
+
+/* 显示分数的title */
+
+.dialog .leader-board .title .title-score-box {
+  width: 60%;
+  height: 100%;
+  border-radius: 10rpx 10rpx 0 0;
+  background: #999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 分数标签 */
+
+.dialog .leader-board .title .title-score-box .label-score {
+  color: white;
+  font-size: 40rpx;
+}
+
+/* 分数数字 */
+
+.dialog .leader-board .title .title-score-box .text-score {
+  color: white;
+  font-size: 60rpx;
+}
+
+/* -----------------------排行榜中间内容------------------------- */
+
+.dialog .leader-board .content {
+  width: 100%;
+  height: 50%;
+  background: #fef9e7;
+  border-radius: 0 0 20rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+/* 提示文字 */
+
+.dialog .leader-board .content .congrate-label-box {
+  width: 25%;
+  height: 10%;
+  background: #6699FF;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 虚线圈 */
+
+.dialog .leader-board .content .rate-box {
+  width: 150rpx;
+  height: 150rpx;
+  background-color: transparent; /* Can be set to transparent */
+  border: 3px #66CCFF dashed;
+  border-radius: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 虚线圈内的排名 */
+.dialog .leader-board .content .rate-box .rect {
+  width: 75%;
+  height: 75%;
+  background: #66CCFF;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60rpx;
+  color: white;
+}
+
+/* 显示超过多少人*/
+
+.dialog .leader-board .content .tip-box {
+  display: flex;
+  font-size: 30rpx;
+  color: #872f06;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ---------------排行榜 底部 ------------------------------- */
+
+.dialog .leader-board .foot {
+  width: 100%;
+  height: 15%;
+  margin-top: 3%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position:  relative;
+}
+
+.dialog .leader-board .foot button{
+  width: 48%;
+  height: 80rpx;
+  border-radius: 25rpx;
+  padding: 0;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36rpx;
+  text-align: center;
+}
+
+.dialog .leader-board .foot .btn-share{
+  background: #CC9966;
+}
+
+.dialog .leader-board .foot .btn-retry{
+  background: #CC9999;
+}
+
+.dialog .leader-board .btn-return{
+  width: 100%;
+  font-size: 30rpx;
+  text-align: center;
+  color: white;
+  position: absolute;
+  bottom: 90rpx;
+  left: 0;
+  right:0;
+  text-decoration: underline;
+}
+/* 游戏结束UI end  */

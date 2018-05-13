@@ -1,7 +1,9 @@
 {
   "pages": [
     "pages/game/index",
-    "pages/index/index"
+    "pages/index/index",
+    "components/pauseui/index",
+    "pages/lobby/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

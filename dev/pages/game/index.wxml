@@ -21,9 +21,13 @@
   </view>
   <canvas class="game-canvas" canvas-id='game-canvas' disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd" hidden="{{hideCanvas}}">
     <cover-view class="controls">
-      <cover-image class="pause" src="/images/game/pause.png" bindtap='clickPause'></cover-image> 
-      <button class="btn-reset" bindtap='resetOption' open-type="share">reset</button>
+      <cover-image class="pause" src="/images/game/pause.png" bindtap='clickPause'></cover-image>
     </cover-view>
-
   </canvas>
 </view>
+
+<pauseui id="ui-pauseui" bind:replay="replay" bind:close="closePause">
+</pauseui>
+
+<gameoverui class="ui-gameover" id="ui-gameover" bind:retry="replay" score="{{score}}" bestScore="{{bestScore}}">
+</gameoverui>

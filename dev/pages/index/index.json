@@ -1,9 +1,7 @@
 {
-  "navigationBarTitleText": "合到7",
-  "navigationBarTextStyle": "white",
+  "navigationBarTitleText": "index",
   "enablePullDownRefresh": false,
   "disableScroll": true,
-  "navigationBarBackgroundColor": "#2B223B",
   "usingComponents": {
     "dialog": "/components/dialog/index",
     "gameoverui": "/components/gameoverui/index",

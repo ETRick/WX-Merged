@@ -127,7 +127,7 @@ var PairTile = (function () {
           return false;
         if (posY < this.y - BOX_WIDTH * 1.3)
           return false;
-      } else {
+      } else {  
         if (posX > this.x + BOX_WIDTH * 1.3)
           return false;
         if (posX < this.x - BOX_WIDTH * 1.3)

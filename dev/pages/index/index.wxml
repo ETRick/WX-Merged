@@ -11,3 +11,6 @@
     <text class="user-motto">{{motto}}</text>
   </view>
 </view>
+
+<gameoverui class="ui-gameover" id="ui-testui">
+</gameoverui>

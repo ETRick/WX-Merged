@@ -34,6 +34,7 @@ App({
     })
   },
   globalData: {
+    isAudioOn: true,
     userInfo: null
   }
 })

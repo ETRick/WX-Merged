@@ -1,0 +1,57 @@
+/* components/dialog/index.wxml */
+
+.custom-dialog {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  justify-content: center;
+}
+
+.custom-dialog .container {
+  width: 100%;
+  height: 100%;
+  transform: scale(0);
+  animation-delay: 5s;
+  animation: pop-up 0.2s linear 1;
+  animation-fill-mode: forwards;
+}
+
+/* 背景 */
+
+.custom-dialog .container .backdrop {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0.8;
+  z-index: 3;
+}
+
+/* 用户挂在自己view的地方 */
+
+.custom-dialog .container .inner-dialog {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 动画 */
+
+/* 弹出动画 */
+
+@keyframes pop-up {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
