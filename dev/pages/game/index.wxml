@@ -16,13 +16,19 @@
     </block>
   </view>
   <view class="option-area ">
-
+    <view class="step-bar">
+      <view class="container">
+        <block wx:for="{{3}}" wx:key="index">
+          <view class="{{energy > index ? 'item' : 'item-empty'}}"></view>
+        </block>
+      </view>
+    </view>
     <image class="option-tool " src="/images/game/rotate.png "></image>
   </view>
   <canvas class="game-canvas" canvas-id='game-canvas' disable-scroll="true" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd" hidden="{{hideCanvas}}">
-    <cover-view class="controls">
-      <cover-image class="pause" src="/images/game/pause.png" bindtap='clickPause'></cover-image>
-    </cover-view>
+    <cover-image class="pause" src="/images/game/pause.png" bindtap='clickPause'></cover-image>
+
+    <cover-image class="btn-energy" src="/images/home.png" bindtap='clickEnergy' style="opacity:{{energy==3?1:0.1}}"></cover-image>
   </canvas>
 </view>
 

@@ -34,7 +34,8 @@ var {
   OFFESET_Y,
   FIT_MOVE_TIME,
   ROTATE_TIME,
-  MERGE_TIME
+  MERGE_TIME,
+  MAX_ENERGY,
 } = require("../../consts.js");
 
 const DIRECTIONS = [
@@ -74,6 +75,7 @@ Page({
     tileOccpuied: [],
     tileImgSrc: [],
     hideCanvas: false,
+    energy: 0,
   },
 
   /**
@@ -226,7 +228,6 @@ Page({
   // 接下去产生的是不是单个的
   isNextSingle: function () {
     if (this.hasContiousPos()) {
-      return false;
       return Math.random() > 0.5;
     } else {
       return true;
@@ -434,7 +435,9 @@ Page({
       }
     } else {
       this.addTile(centerGridPos.x, centerGridPos.y, currentValue + 1);
-
+      this.setData({
+        energy: Math.min(this.data.energy + 1, MAX_ENERGY)
+      });
     }
     this.data.score += currentValue * (findTileIds.length + 1);
     this.setData({
@@ -520,8 +523,14 @@ Page({
     });
 
     this.pauseUI.show();
+  },
+  
+  clickEnergy: function(){
+    this.setData({
+      energy: 0,
+    });
 
-    // this.startNewGame();
+    this.generateOption();
   },
 
   touchStart: function (e) {

@@ -56,11 +56,11 @@ Component({
       this.dialog.hide();
     },
 
-    _replay: function(){
+    _replay: function () {
       this.triggerEvent("replay");
     },
 
-    _close: function(){
+    _close: function () {
       this.triggerEvent("close");
     },
 
@@ -74,9 +74,7 @@ Component({
 
     _returnHome: function () {
       this.hide();
-      wx.navigateBack({
-        delta: 2
-      });
+      wx.navigateBack({ delta: 1});
     }
   }
 })

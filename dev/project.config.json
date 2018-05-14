@@ -41,6 +41,12 @@
 					"name": "lobby",
 					"pathName": "pages/lobby/index",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "game",
+					"pathName": "pages/game/index",
+					"query": ""
 				}
 			]
 		}

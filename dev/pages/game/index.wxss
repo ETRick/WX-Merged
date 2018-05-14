@@ -93,6 +93,39 @@ page {
   align-items: center;
 }
 
+/* step  */
+.step-bar {
+  margin-top: 10rpx;
+  width: 30%;
+  height: 30rpx;
+  position: fixed;
+  left: 10rpx;
+  bottom: 20%;
+}
+
+.step-bar .container {
+  margin-left: 5rpx;
+  margin-right: 5rpx;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  align-items: center;
+  background: darkslategray;
+  border-radius: 10rpx;
+}
+.step-bar .item {
+  width: 30%;
+  height: 60rpx;
+  background-color: #b3ddfc;
+  border-radius: 10rpx;
+}
+.step-bar .item-empty {
+  width: 30%;
+  height: 60rpx;
+  background-color: darkgray;
+  border-radius: 10rpx;
+}
+
 .container .option-area .btn-reset {
   position: absolute;
   left: 50rpx;
@@ -123,12 +156,12 @@ page {
   margin-top: 10rpx;
 }
 
-/* 重置按钮 */
-
-.game-canvas .controls .btn-reset {
-  width:150rpx;
-  height: 100rpx;
-  background: red;
+.game-canvas  .btn-energy{
+  width: 64rpx;
+  height: 64rpx;
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
 }
 
 /* @font-face {

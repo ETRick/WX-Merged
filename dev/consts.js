@@ -38,6 +38,8 @@ const FIT_MOVE_TIME = 60;
 const MERGE_TIME = 200;
 // 旋转事件
 const ROTATE_TIME = 150;
+// 最大充能数
+const MAX_ENERGY = 3;
 
 const CONSTS = {
   GAME_AREA: GAME_AREA,
@@ -53,7 +55,8 @@ const CONSTS = {
   OFFESET_Y: OFFESET_Y,
   FIT_MOVE_TIME: FIT_MOVE_TIME,
   MERGE_TIME: MERGE_TIME,
-  ROTATE_TIME: ROTATE_TIME
+  ROTATE_TIME: ROTATE_TIME,
+  MAX_ENERGY: MAX_ENERGY
 }
 
 module.exports = CONSTS;
