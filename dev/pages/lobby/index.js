@@ -7,7 +7,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    bestScore: 0
+    bestScore: 0,
+    isMusicOn: true,
   },
 
   /**
@@ -15,9 +16,14 @@ Page({
    */
   onLoad: function (options) {
     this.data.bestScore = util.getLocalData("bestScore") || 0;
+    // this.data.isMusicOn = 
     this.setData({
       bestScore: this.data.bestScore
     });
+  },
+
+  clickMusicToggle: function(){
+    // TODO 音樂開啟關閉
   },
 
   startGame: function(){

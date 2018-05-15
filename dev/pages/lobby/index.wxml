@@ -1,20 +1,25 @@
 <!--pages/lobby/index.wxml-->
 <view class="container">
   <view class="title">
-    <text>合到七</text>
+    <image class="btn-music" src="/assets/images/lobby/m_1.png" bindtap='clickMusicToggle'>
+      <image class="toggle-music" src="/assets/images/lobby/m_2.png" hidden="{{!isMusicOn}}"></image>
+    </image>
+    <image class="image-title" src="/assets/images/lobby/merged7.png"></image>
   </view>
   <view class="content">
+    <view class="tutorial">
+    </view>
     <view class="bestSocre">
       <text>最高分：{{bestScore}}</text>
     </view>
     <view class="button-container">
       <button class="start-game" bindtap='startGame'>开始游戏</button>
       <view class="tool-bar">
-        <image src="/images/share.png">
+        <image src="/assets/images/share.png">
           <button open-type='share' class="btn-share" plain="true">
           </button>
         </image>
-        <image src="/images/微信公众号.png" bindtap='follow'></image>
+        <image src="/assets/images/微信公众号.png" bindtap='follow'></image>
       </view>
     </view>
   </view>

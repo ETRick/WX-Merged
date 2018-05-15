@@ -6,8 +6,8 @@
     <text class='btn-close' bindtap='_close'>X</text>
   </view>
     <view class="second-row">
-      <image src="/images/home.png" class="btn-returnHome" bindtap='_returnHome'></image>
-      <image src="{{isAudioOn?'/images/audio-mid.png':'/images/audio-mute.png'}} " class="btn-enable-audio" bindtap='_audioHandle'></image>
+      <image src="/assets/images/home.png" class="btn-returnHome" bindtap='_returnHome'></image>
+      <image src="{{isAudioOn?'/assets/images/audio-mid.png':'/images/audio-mute.png'}} " class="btn-enable-audio" bindtap='_audioHandle'></image>
     </view>
   </view>
 </dialog>

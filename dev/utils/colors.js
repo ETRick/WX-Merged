@@ -10,13 +10,13 @@ const VALUE_COLORS = {
 }
 
 const VALUE_IMG_SRCS = {
-  1: "/images/game/n1.png",
-  2: "/images/game/n2.png",
-  3: "/images/game/n3.png",
-  4: "/images/game/n4.png",
-  5: "/images/game/n5.png",
-  6: "/images/game/n6.png",
-  7: "/images/game/M.png",
+  1: "/assets/images/game/n1.png",
+  2: "/assets/images/game/n2.png",
+  3: "/assets/images/game/n3.png",
+  4: "/assets/images/game/n4.png",
+  5: "/assets/images/game/n5.png",
+  6: "/assets/images/game/n6.png",
+  7: "/assets/images/game/M.png",
 }
 
 const COLOR_COUNT = 7;
