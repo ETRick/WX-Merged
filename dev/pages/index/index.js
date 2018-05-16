@@ -2,6 +2,8 @@
 //获取应用实例
 const app = getApp()
 
+var Bmob = require('../../utils/bmob.js');
+
 Page({
   data: {
     motto: 'Hello World',
@@ -34,7 +36,6 @@ Page({
       // 在没有 open-type=getUserInfo 版本的兼容处理
       wx.getUserInfo({
         success: res => {
-          app.globalData.userInfo = res.userInfo
           this.setData({
             userInfo: res.userInfo,
             hasUserInfo: true
@@ -43,16 +44,46 @@ Page({
       })
     }
 
-    let testui = this.selectComponent("#ui-testui");
-    console.log(testui);
-    testui.show();
   },
   getUserInfo: function(e) {
     console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
     this.setData({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
-    })
-  }
+    });
+
+    this.updateUserSettingInfo(e.detail.userInfo);
+    // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+    // 所以此处加入 callback 以防止这种情况
+    if (this.userInfoReadyCallback) {
+      this.userInfoReadyCallback(app.globalData.userInfo)
+    }
+  },
+
+  /** 更新用户设置数据 */
+  updateUserSettingInfo(userInfo) {
+    console.log(userInfo);
+    app.globalData.userInfo.nickName = userInfo.nickName;
+    app.globalData.userInfo.avatarUrl = userInfo.avatarUrl;
+
+    console.log("updateUserSettingInfo id ====>" + app.globalData.userInfo.id)
+    if (app.globalData.userInfo.id == null) {
+      return;
+    }
+
+    let User = Bmob.Object.extend("_User");
+    let query = new Bmob.Query(User);
+    console.log(app.globalData.userInfo.id);
+    query.get(app.globalData.userInfo.id, {
+      success: function (result) {
+        result.set('nickName', userInfo.nickName);
+        result.set('avatarUrl', userInfo.avatarUrl);
+        result.save();
+      }
+    });
+
+    setTimeout(()=>{
+      app.sendBestScore(12);
+    }, 1000);
+  },
 })
